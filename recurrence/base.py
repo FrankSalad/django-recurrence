@@ -341,6 +341,26 @@ class Recurrence(object):
     def __ne__(self, other):
         return not self.__eq__(other)
 
+    def __sub__(self, other):
+        """
+        Returns a new Recurrence that excludes all included rules and dates in `other`.
+        Ignores `other.dtstart` and `other.dtend`.
+
+        :Parameters:
+            `other` a Recurrence object we will 'subtract' from this one.
+        :Returns:
+            A new Recurrence object with identical inclusions and additional exclusions.
+        """
+        exrules = set(self.exrules).union(other.rrules)
+        exdates = set(self.exdates).union(other.rdates)
+        return Recurrence(
+            dtstart=self.dtstart,
+            dtend=self.dtend,
+            rrules=self.rrules,
+            rdates=self.rdates,
+            exrules=exrules,
+            exdates=exdates)
+
     def occurrences(
         self, dtstart=None, dtend=None, cache=False
     ):
